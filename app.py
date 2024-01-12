@@ -64,7 +64,9 @@ def serve_layout():
 
 def fetch_data():
     connection = Connection('Test.db')
-    return connection.get_readings(0, 0)
+    readings = connection.get_readings(0, 0)
+    connection.connection.close()
+    return readings
 
 app.layout = serve_layout
 
