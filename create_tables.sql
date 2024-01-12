@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS temp_reading (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    channel INTEGER NOT NULL,
+    timestamp INTEGER NOT NULL,
+    value REAL NOT NULL
+);
