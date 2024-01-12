@@ -1,6 +1,5 @@
 from dash import Dash, html, dcc, callback, Output, Input
-import dash_daq as daq
-import plotly.express as px
+import plotly.graph_objects as go
 import pandas as pd
 
 from database import Connection
@@ -13,52 +12,53 @@ connection = None
 def serve_layout():
     reading_data = fetch_data()
     current_temp = int(reading_data[-1].value)
+    delta_ref = int(reading_data[-2].value)
     df = pd.DataFrame(reading_data)
     df['timestamp'] = pd.to_datetime(df['timestamp'], unit='s')
+    df['timestamp'] = pd.to_datetime(df['timestamp'], format='%H:%M')
     return html.Div([
-        html.Div(
-            style={
-                'display': 'flex',
-            },
-            children=[
-                html.Div(
-                    children=[daq.Gauge(
-                        id='temp-gauge',
-                        size=200,
-                        value=current_temp,
-                        min=100,
-                        max=900,
-                        scale={
-                            'start': 100,
-                            'interval': 50
-                        },
-                        color={
-                            'gradient': False,
-                            'ranges': {
-                                'yellow': [100, 330],  # theres a bug in the component that messes up scaling if the min is not 0
-                                'orange': [330, 630],  # visually orange is 400-650
-                                'red': [630, 900],
-                            }
-                        }
-                    )],
-                    style={
-                        'flex': '1',
-                    }
-                ),
-                html.Div(
-                    children=[
-                        html.H1(f'{current_temp} F', style={'font-size': '80px'}),
+        dcc.Graph(
+            figure=go.Figure(
+                data=go.Indicator(
+                domain={'x': [0, 1], 'y': [0, 1]},
+                value=current_temp,
+                mode="gauge+number+delta",
+                delta={
+                    'suffix': '° F/min',
+                    'reference': delta_ref,
+                },
+                gauge={
+                    'bar': {'color': "green"},
+                    'axis': {'range': [100, 900]},
+                    'steps' : [
+                        {'range': [0, 400], 'color': "yellow"},
+                        {'range': [400, 650], 'color': "orange"},
+                        {'range': [650, 900], 'color': "red"},
                     ],
-                    style={
-                        'flex': '1',
-                        'padding-top': '50px',
-                    }
+                }),
+                layout=go.Layout(
+                    paper_bgcolor='lightgray',
                 ),
-            ]
+            ),
         ),
         dcc.Graph(
-            figure=px.line(df, x='timestamp', y='value', markers=True),
-            id='graph-content',
+            figure=go.Figure(
+                data=go.Scatter(
+                    x=df['timestamp'],
+                    y=df['value'],
+                    mode='lines',
+                ),
+                layout=go.Layout(
+                    xaxis={
+                        'title': None,
+                        'showgrid': False,
+                    },
+                    yaxis=None,
+                    margin={'l': 0, 'r': 0, 't': 0, 'b': 0},
+                    paper_bgcolor='lightgray',
+                    plot_bgcolor='lightgray',
+                ),
+            ),
         ),
     ])
 
