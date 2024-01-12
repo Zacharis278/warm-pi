@@ -3,11 +3,18 @@ import dash_daq as daq
 import plotly.express as px
 import pandas as pd
 
+from database import Connection
+
 
 app = Dash(__name__)
 
+connection = None
+
 def serve_layout():
-    df = pd.read_csv('data/test.csv')
+    reading_data = fetch_data()
+    current_temp = int(reading_data[-1].value)
+    df = pd.DataFrame(reading_data)
+    df['timestamp'] = pd.to_datetime(df['timestamp'], unit='s')
     return html.Div([
         html.Div(
             style={
@@ -18,7 +25,7 @@ def serve_layout():
                     children=[daq.Gauge(
                         id='temp-gauge',
                         size=200,
-                        value=550,
+                        value=current_temp,
                         min=100,
                         max=900,
                         scale={
@@ -40,7 +47,7 @@ def serve_layout():
                 ),
                 html.Div(
                     children=[
-                        html.H1('575° F', style={'font-size': '80px'}),
+                        html.H1(f'{current_temp} F', style={'font-size': '80px'}),
                     ],
                     style={
                         'flex': '1',
@@ -55,15 +62,11 @@ def serve_layout():
         ),
     ])
 
-app.layout = serve_layout
+def fetch_data():
+    connection = Connection('Test.db')
+    return connection.get_readings(0, 0)
 
-# @callback(
-#     Output('graph-content', 'figure'),
-# #     Input('dropdown-selection', 'value')
-# )
-# def update_graph():
-#     dff = df[df.channel == 1]
-#     return px.line(dff, x='timestamp', y='reading')
+app.layout = serve_layout
 
 if __name__ == '__main__':
     app.run(debug=True)
