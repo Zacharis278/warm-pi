@@ -12,7 +12,7 @@ connection = None
 def serve_layout():
     reading_data = fetch_data()
     current_temp = int(reading_data[-1].value)
-    delta_ref = int(reading_data[-2].value)
+    delta_ref = int(reading_data[-12].value)
     df = pd.DataFrame(reading_data)
     df['timestamp'] = pd.to_datetime(df['timestamp'], unit='s')
     df['timestamp'] = pd.to_datetime(df['timestamp'], format='%H:%M')
