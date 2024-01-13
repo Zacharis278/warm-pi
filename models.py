@@ -4,4 +4,4 @@ from dataclasses import dataclass
 class Reading():
     channel: int
     timestamp: int
-    value: float
+    value: int

@@ -21,7 +21,7 @@ def continuous_read():
     while True:
         try:
             value = THERMO.getTEMP(0, 1)
-            value = value * 1.8 + 32  # convert to fahrenheit
+            value = int(value * 1.8 + 32)  # convert to fahrenheit
             reading = Reading(1, int(time.time()), value)
             db.write_reading(reading)
             time.sleep(READ_INTERVAL_SECONDS)
