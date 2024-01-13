@@ -12,7 +12,7 @@ except ImportError:
 
 #DATABASE = ':memory:'
 DATABASE = 'Test.db'
-READ_INTERVAL_SECONDS = 1
+READ_INTERVAL_SECONDS = 5
 
 db = None
 
