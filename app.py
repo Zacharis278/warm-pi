@@ -1,4 +1,5 @@
 from dash import Dash, html, dcc, callback, Output, Input
+import datetime
 import plotly.graph_objects as go
 import pandas as pd
 
@@ -64,7 +65,11 @@ def serve_layout():
 
 def fetch_data():
     connection = Connection('Test.db')
-    readings = connection.get_readings(0, 0)
+
+    readings = connection.get_readings(
+        datetime.datetime.now() - datetime.timedelta(hours=6),
+        datetime.datetime.now()
+    )
     connection.connection.close()
     return readings
 
