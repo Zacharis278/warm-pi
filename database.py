@@ -33,7 +33,6 @@ class Connection:
         """ get all readings between start and end datetime """
         sql = ''' SELECT channel, timestamp, value FROM temp_reading
             WHERE timestamp BETWEEN ? AND ? '''
-        import pdb; pdb.set_trace()
         cur = self.connection.cursor()
         cur.execute(sql, (start_datetime.timestamp(), end_datetime.timestamp()))
         cur.row_factory = self._map_to_reading

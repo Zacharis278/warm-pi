@@ -76,4 +76,5 @@ def fetch_data():
 app.layout = serve_layout
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run_server(host= '0.0.0.0', debug=False)
+    # app.run(debug=True)
