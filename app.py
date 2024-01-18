@@ -67,7 +67,7 @@ def fetch_data():
     connection = Connection('Test.db')
 
     readings = connection.get_readings(
-        datetime.datetime.now() - datetime.timedelta(hours=6),
+        datetime.datetime.now() - datetime.timedelta(hours=2),
         datetime.datetime.now()
     )
     connection.connection.close()
