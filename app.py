@@ -91,11 +91,11 @@ def update_gauge(n):
     x = np.arange(len(tail))
     y = tail['value'].values
     slope, intercept, r_value, p_value, std_err = linregress(x, y)
-    if abs(slope) < .5:
+    if False: # abs(slope) < .5:
         ref = round(current_temp-slope*5)
         ref_units = '° F/5min'
     else:
-        ref = round(current_temp-slope)
+        ref = round(current_temp-slope, 2)
         ref_units = '° F/min'
     
     return gauge_figure(current_temp, ref, ref_units)
