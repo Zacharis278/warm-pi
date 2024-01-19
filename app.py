@@ -81,7 +81,7 @@ def serve_layout():
 def update_gauge(n):
     reading_data = get_readings()
     current_temp = int(reading_data[-1].value)
-    delta_ref = int(reading_data[-1].value)
+    delta_ref = int(reading_data[-12].value)
     df = pd.DataFrame(reading_data)
     df['timestamp'] = pd.to_datetime(df['timestamp'], unit='s')
     df['timestamp'] = pd.to_datetime(df['timestamp'], format='%H:%M')
