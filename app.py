@@ -1,7 +1,9 @@
 from dash import Dash, html, dcc, callback, Output, Input
 from datetime import datetime, timedelta
+import numpy as np
 import plotly.graph_objects as go
 import pandas as pd
+from scipy.stats import linregress
 
 from database import Connection
 
@@ -13,14 +15,14 @@ connection = None
 reading_data = []
 
 # todo: these need some refactoring into components
-def gauge_figure(current_temp, delta_ref):
+def gauge_figure(current_temp, delta_ref, ref_units):
     return go.Figure(
         data=go.Indicator(
         domain={'x': [0, 1], 'y': [0, 1]},
         value=current_temp,
         mode="gauge+number+delta",
         delta={
-            'suffix': '° F/min',
+            'suffix': ref_units,
             'reference': delta_ref,
         },
         gauge={
@@ -81,11 +83,22 @@ def serve_layout():
 def update_gauge(n):
     reading_data = get_readings()
     current_temp = int(reading_data[-1].value)
-    delta_ref = int(reading_data[-12].value)
     df = pd.DataFrame(reading_data)
     df['timestamp'] = pd.to_datetime(df['timestamp'], unit='s')
     df['timestamp'] = pd.to_datetime(df['timestamp'], format='%H:%M')
-    return gauge_figure(current_temp, delta_ref)
+
+    tail = df.tail(12)
+    x = np.arange(len(tail))
+    y = tail['value'].values
+    slope, intercept, r_value, p_value, std_err = linregress(x, y)
+    if abs(slope) < .5:
+        ref = round(current_temp-slope*5)
+        ref_units = '° F/5min'
+    else:
+        ref = round(current_temp-slope)
+        ref_units = '° F/min'
+    
+    return gauge_figure(current_temp, ref, ref_units)
 
 @callback(Output('graph', 'figure'), [Input('interval-component', 'n_intervals')])
 def update_graph(n):
