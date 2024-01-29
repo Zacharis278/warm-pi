@@ -24,6 +24,7 @@ def gauge_figure(current_temp, delta_ref, ref_units):
         delta={
             'suffix': ref_units,
             'reference': delta_ref,
+            'valueformat': '.2f',
         },
         gauge={
             'bar': {'color': "green"},
