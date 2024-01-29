@@ -88,7 +88,7 @@ def update_gauge(n):
     df['timestamp'] = pd.to_datetime(df['timestamp'], unit='s')
     df['timestamp'] = pd.to_datetime(df['timestamp'], format='%H:%M')
 
-    tail = df.tail(12)
+    tail = df.tail(60)
     x = np.arange(len(tail))
     y = tail['value'].values
     slope, intercept, r_value, p_value, std_err = linregress(x, y)
