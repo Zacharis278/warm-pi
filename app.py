@@ -28,11 +28,11 @@ def gauge_figure(current_temp, delta_ref, ref_units):
         },
         gauge={
             'bar': {'color': "green"},
-            'axis': {'range': [100, 900]},
+            'axis': {'range': [100, 800]},
             'steps' : [
-                {'range': [0, 350], 'color': "yellow"},
-                {'range': [350, 600], 'color': "orange"},
-                {'range': [600, 900], 'color': "red"},
+                {'range': [0, 325], 'color': "yellow"},
+                {'range': [325, 550], 'color': "orange"},
+                {'range': [550, 800], 'color': "red"},
             ],
         }),
         layout=go.Layout(
